@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poojan Patel - Software Engineer Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #111827; /* Tailwind gray-900 */
+            color: #d1d5db; /* Tailwind gray-300 */
+            margin: 0;
+            overflow-x: hidden; 
+        }
+        .section-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            background: linear-gradient(90deg, #22d3ee, #a78bfa); 
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding-bottom: 0.5rem; 
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            position: relative;
+        }
+        .section-title.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 0; 
+            height: 3px; 
+            background: linear-gradient(90deg, #22d3ee, #a78bfa);
+            transition: width 0.6s ease-out 0.5s; 
+        }
+        .section-title.is-visible::after {
+            width: 100px; 
+        }
+
+        .tag {
+            background: #334155;
+            color: #22d3ee;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            transition: background 0.2s, color 0.2s;
+        }
+        .tag:hover {
+            background: #22d3ee;
+            color: #111827;
+        }
+        .project-card img {
+            object-fit: cover;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            min-height: 220px;
+            max-height: 340px;
+            border-radius: 1.25rem;
+            box-shadow: 0 4px 24px 0 rgba(34,211,238,0.10), 0 1.5px 8px 0 rgba(167,139,250,0.08);
+            background: linear-gradient(135deg, #232946 0%, #16161a 100%);
+            border: 2px solid #232946;
+            transition: transform 0.3s, box-shadow 0.3s, filter 0.3s, border-color 0.3s;
+            filter: grayscale(8%) brightness(0.98) contrast(1.05);
+        }
+        .project-card:hover img, .project-card:focus-within img {
+            transform: scale(1.04) rotate(-1deg);
+            box-shadow: 0 8px 32px 0 rgba(34,211,238,0.18), 0 1.5px 8px 0 rgba(167,139,250,0.12);
+            filter: grayscale(0%) brightness(1.08) contrast(1.12);
+            border-color: #22d3ee;
+        }
+        /* Social Media Icon Sizing and Consistency */
+        .social-icon {
+            width: 35px !important;
+            height: 35px !important;
+            display: inline-block;
+            transition: transform 0.3s, fill 0.3s;
+            fill: #22d3ee;
+        }
+        .social-icon:hover, .social-icon:focus {
+            transform: scale(1.18) rotate(-6deg);
+            fill: #67e8f9;
+        }
+        /* Remove previous w-10 h-10 on social icons in contact section */
+        #contact .flex-row a svg {
+            width: 35px !important;
+            height: 35px !important;
+        }
+
+        /* --- Professional Hero Section Buttons --- */
+        .primary-button {
+            display: inline-block;
+            position: relative;
+            padding: 0.85rem 2.5rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+            border-radius: 1.5rem;
+            background: linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%); /* blue-600 to sky-500 */
+            color: #fff;
+            box-shadow: 0 2px 12px 0 rgba(30,64,175,0.10);
+            border: none;
+            transition: background 0.3s, box-shadow 0.3s, transform 0.15s;
+            text-shadow: none;
+        }
+        .primary-button:hover, .primary-button:focus {
+            background: linear-gradient(90deg, #1d4ed8 0%, #0369a1 100%); /* darker blue */
+            box-shadow: 0 4px 24px 0 rgba(30,64,175,0.16);
+            transform: translateY(-2px) scale(1.04);
+            color: #fff;
+        }
+        .primary-button::before { display: none; }
+
+        .secondary-button {
+            display: inline-block;
+            position: relative;
+            padding: 0.85rem 2.5rem;
+            font-weight: 700;
+            font-size: 1.15rem;
+            border-radius: 1.5rem;
+            background: transparent;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+            box-shadow: none;
+            transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.15s;
+            text-shadow: none;
+        }
+        .secondary-button:hover, .secondary-button:focus {
+            background: #e0f2fe; /* light blue-100 */
+            color: #1e293b; /* slate-800 */
+            border-color: #0ea5e9;
+            transform: translateY(-1px) scale(1.03);
+        }
+        .secondary-button::before { display: none; }
+
+        /* Glassmorphism effect for hero content */
+        #hero .relative.z-10 {
+            background: none !important;
+            border: none !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            /* Keep padding and margin for layout */
+            padding: 2.5rem 1.5rem 2.5rem 1.5rem;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        /* Subtle text shadow for hero text */
+        #hero h1, #hero p.text-xl, #hero p.text-lg {
+            text-shadow: 0 2px 16px #22d3ee22, 0 1px 2px #000a;
+        }
+
+        .experience-card {
+            transition: all 0.3s ease;
+        }
+        
+        .experience-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .achievement-item {
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .tag {
+            transition: all 0.3s ease;
+        }
+        
+        .tag:hover {
+            transform: scale(1.05);
+        }
+
+        /* Enhanced Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            #hero h1 {
+                font-size: 3rem;
+            }
+            
+            .experience-card, .project-card, .education-card {
+                margin: 0 1rem;
+            }
+
+            .nav-link {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .tag {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.8rem;
+            }
+        }
+
+        /* Enhanced Skills Section Styles */
+        .skills-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .skills-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .skills-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .skills-icon {
+            transition: all 0.3s ease;
+        }
+
+        .skills-card:hover .skills-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .tag {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .tag::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #22d3ee;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .tag:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Mobile Navigation */
+        @media (max-width: 768px) {
+            nav .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            nav .space-x-1 {
+                margin-top: 1rem;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .nav-link {
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                background: rgba(34, 211, 238, 0.1);
+            }
+        }
+
+        /* Project Card Height Consistency */
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .project-card .relative {
+            height: 280px;
+        }
+
+        .project-card img {
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-card .p-6 {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card .p-6 .flex-wrap {
+            margin-bottom: auto;
+        }
+
+        /* Education Card Enhancements */
+        .education-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .education-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(34, 211, 238, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .education-card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .education-card img {
+            transition: transform 0.3s ease;
+        }
+
+        .education-card:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Enhanced Education Section Styles */
+        #education {
+            position: relative;
+            background: linear-gradient(to bottom, #111827, #1e293b);
+        }
+
+        #education::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(34, 211, 238, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .education-card {
+            position: relative;
+            overflow: hidden;
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 211, 238, 0.1);
+        }
+
+        .education-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(34, 211, 238, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .education-card:hover::after {
+            opacity: 1;
+        }
+
+        .education-card img {
+            transition: all 0.3s ease;
+            filter: brightness(0.95) contrast(1.1);
+        }
+
+        .education-card:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.1) contrast(1.2);
+        }
+
+        .education-title {
+            position: relative;
+            display: inline-block;
+        }
+
+        .education-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #22d3ee, transparent);
+            transition: width 0.3s ease;
+        }
+
+        .education-card:hover .education-title::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-gray-800/80 backdrop-blur-md shadow-lg sticky top-0 z-50 m-0 p-0">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-bold" style="font-family: 'Rajdhani', sans-serif; background: linear-gradient(90deg, #22d3ee, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent;">Poojan Patel</a>
+            <div class="space-x-1 md:space-x-2">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#education" class="nav-link">Education</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="parallax-bg-dark text-white pt-0 md:pt-0 pb-28 md:pb-48 min-h-[80vh] md:min-h-[90vh] flex items-center justify-center overflow-hidden relative">
+            <canvas id="hero-canvas" class="absolute inset-0 w-full h-full z-0"></canvas>
+            <div class="relative flex flex-col items-center justify-center text-center z-10 w-full">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-in" style="font-family: 'Rajdhani', sans-serif;">
+                    Hi, I'm <span style="background: linear-gradient(90deg, #22d3ee, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; text-shadow: 0 0 30px rgba(34, 211, 238, 0.3);">Poojan Patel</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-cyan-300 max-w-2xl mx-auto animate-fade-in delay-100 text-center">
+                    Full Stack Engineer | Cloud-Native Specialist | UI/UX Enthusiast
+                </p>
+                <p class="text-lg md:text-xl mb-10 text-gray-300 max-w-2xl mx-auto animate-fade-in delay-200 text-center">
+                    I build robust, scalable, and beautiful digital products that drive business growth and delight users. If you're looking for someone who can turn complex ideas into seamless, production-ready solutions—and bring energy, creativity, and reliability to your team—let's connect!
+                </p>
+                <div class="space-y-4 md:space-y-0 md:space-x-4 flex flex-col md:flex-row justify-center items-center w-full animate-fade-in delay-300"> 
+                    <a href="#contact" class="primary-button md:text-lg w-full md:w-auto shadow-lg hover:shadow-cyan-400/40 transition">Let's Build Something Amazing</a> 
+                    <a href="#projects" class="secondary-button md:text-lg w-full md:w-auto border-2 border-cyan-400 hover:bg-cyan-400 hover:text-gray-900 transition">See My Work</a> 
+                </div>
+                <p class="mt-8 text-base text-gray-400 animate-fade-in delay-400 text-center">
+                    <span class="inline-block bg-cyan-900/30 rounded-full px-4 py-2 font-medium text-cyan-300 shadow-sm">Open to new opportunities & collaborations</span>
+                </p>
+                <style>
+                    @keyframes fade-in {
+                        from { opacity: 0; transform: translateY(30px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    .animate-fade-in { animation: fade-in 1s cubic-bezier(0.4,0,0.2,1) both; }
+                    .delay-100 { animation-delay: 0.1s; }
+                    .delay-200 { animation-delay: 0.2s; }
+                    .delay-300 { animation-delay: 0.3s; }
+                    .delay-400 { animation-delay: 0.4s; }
+                </style>
+            </div>
+        </header>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 md:py-20 relative overflow-hidden">
+        <canvas id="about-canvas" class="absolute inset-0 w-full h-full opacity-30"></canvas>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="section-title-container w-full flex justify-center items-center mb-12">
+                <h2 class="section-title text-5xl md:text-6xl">About Me</h2>
+            </div>
+            <div class="flex flex-col md:flex-row items-center md:items-start gap-8 max-w-4xl mx-auto">
+                <div class="flex-1 text-center md:text-left mx-auto">
+                    <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50">
+                        <h3 class="text-3xl md:text-4xl font-bold mb-6 text-cyan-300" style="font-family: 'Rajdhani', sans-serif;">Modern Full Stack Developer</h3>
+                        <div class="space-y-4">
+                            <p class="text-lg text-gray-300 leading-relaxed">
+                                Hi, I'm Poojan Patel—a passionate full stack developer who loves building robust, scalable, and beautiful digital products. I specialize in architecting cloud-native applications, designing seamless user experiences, and automating workflows from code to cloud.
+                            </p>
+                            <p class="text-lg text-gray-400 leading-relaxed">
+                                My toolkit spans Java, Python, JavaScript/TypeScript, Angular, React, Node.js, Spring Boot, and modern DevOps with AWS, Docker, and CI/CD. I thrive in agile teams, value clean code, and enjoy mentoring others while staying on the cutting edge of tech.
+                            </p>
+                        </div>
+                        <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-2">
+                            <span class="tag">Cloud-Native</span>
+                            <span class="tag">Microservices</span>
+                            <span class="tag">TypeScript</span>
+                            <span class="tag">React</span>
+                            <span class="tag">Angular</span>
+                            <span class="tag">Spring Boot</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">CI/CD</span>
+                            <span class="tag">Docker</span>
+                            <span class="tag">Mentorship</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="py-20 md:py-28 relative overflow-hidden">
+        <canvas id="experience-canvas" class="absolute inset-0 w-full h-full opacity-30"></canvas>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="section-title-container w-full flex justify-center items-center mb-16">
+                <h2 class="section-title text-5xl md:text-6xl">Work Experience</h2>
+            </div>
+            <div class="max-w-4xl mx-auto">
+                <!-- Experience Timeline -->
+                <div class="relative">
+                    <!-- Timeline Line -->
+                    <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-cyan-500 to-purple-500"></div>
+                    
+                    <!-- Golden Five LLC -->
+                    <div class="mb-16 relative experience-card-container">
+                        <div class="experience-card bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                                <div>
+                                    <h3 class="text-3xl font-bold text-cyan-300 mb-2" style="font-family: 'Rajdhani', sans-serif;">Software Engineer</h3>
+                                    <p class="text-cyan-400 font-medium">Golden Five LLC</p>
+                                    <p class="text-gray-400">Simi Valley, CA</p>
+                                </div>
+                                <div class="mt-4 md:mt-0">
+                                    <span class="inline-block px-4 py-2 rounded-full bg-cyan-900/30 text-cyan-300 text-sm font-medium">Dec 2023 - Present</span>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="achievement-item">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center mr-4">
+                                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-gray-300">Architected and developed highly available enterprise applications using Java (Spring Boot) and MERN stack, achieving 99.9% system uptime.</p>
+                                    </div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center mr-4">
+                                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-gray-300">Led the development of a critical claims processing module using Angular (12+), TypeScript, & NgRx, boosting user workflow efficiency by 25% and cutting data entry errors by 15%.</p>
+                                    </div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center mr-4">
+                                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-gray-300">Engineered CI/CD pipelines with AWS CDK and Terraform, automating deployments and enhancing release velocity.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex flex-wrap gap-2">
+                                <span class="tag">Angular</span>
+                                <span class="tag">TypeScript</span>
+                                <span class="tag">Spring Boot</span>
+                                <span class="tag">AWS CDK</span>
+                                <span class="tag">Terraform</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Raging Developer -->
+                    <div class="mb-16 relative experience-card-container">
+                        <div class="experience-card bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                                <div>
+                                    <h3 class="text-3xl font-bold text-cyan-300 mb-2" style="font-family: 'Rajdhani', sans-serif;">Software Developer</h3>
+                                    <p class="text-cyan-400 font-medium">Raging Developer</p>
+                                    <p class="text-gray-400">Ahmedabad, India</p>
+                                </div>
+                                <div class="mt-4 md:mt-0">
+                                    <span class="inline-block px-4 py-2 rounded-full bg-cyan-900/30 text-cyan-300 text-sm font-medium">Feb 2019 – May 2021</span>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="achievement-item">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center mr-4">
+                                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-gray-300">Key contributor to scalable networking service solutions, ensuring seamless integration and operational efficiency.</p>
+                                    </div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center mr-4">
+                                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-gray-300">Developed and maintained client-facing dashboards & internal tools using Angular and AngularJS.</p>
+                                    </div>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center mr-4">
+                                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-gray-300">Built full-stack web applications with Python (Flask, Django) and React.js.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6 flex flex-wrap gap-2">
+                                <span class="tag">Angular</span>
+                                <span class="tag">AngularJS</span>
+                                <span class="tag">Python</span>
+                                <span class="tag">React</span>
+                                <span class="tag">Django</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-16 md:py-20 bg-gray-900 relative overflow-hidden">
+        <canvas id="projects-canvas" class="absolute inset-0 w-full h-full opacity-30"></canvas>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="section-title-container w-full flex justify-center items-center mb-12">
+                <h2 class="section-title text-5xl md:text-6xl">Featured Projects</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+                <!-- Project 1: Fitboard -->
+                <div class="project-card group">
+                    <div class="relative overflow-hidden rounded-2xl">
+                        <img src="fitBoard.png" alt="Fitboard Project Screenshot" 
+                             class="w-full h-[280px] object-cover transform transition-all duration-500 group-hover:scale-110"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x400/374151/d1d5db?text=Image+Missing';">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    </div>
+                    <div class="p-6 md:p-8 bg-gray-800/50 backdrop-blur-sm rounded-b-2xl border border-gray-700/50">
+                        <h3 class="text-2xl font-bold text-cyan-300 mb-3" style="font-family: 'Rajdhani', sans-serif;">Fitboard</h3>
+                        <p class="text-gray-400 text-sm mb-5 leading-relaxed">A dynamic fitness dashboard application designed to track progress and motivate users with intuitive visualizations and goal setting features.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tag">React</span>
+                            <span class="tag">TypeScript</span>
+                            <span class="tag">Chart.js</span>
+                            <span class="tag">Tailwind CSS</span>
+                        </div>
+                        <a href="https://poojan-2099.github.io/FtiBoard/" target="_blank" rel="noopener noreferrer" 
+                           class="inline-block w-full text-center py-3 px-6 rounded-xl bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 transition-colors duration-300">
+                            View Project
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2: Banking Full Stack Web App (MerBank) -->
+                <div class="project-card group">
+                    <div class="relative overflow-hidden rounded-2xl">
+                        <img src="merbank.png" alt="Banking App Project Screenshot"
+                             class="w-full h-[280px] object-cover transform transition-all duration-500 group-hover:scale-110"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x400/374151/d1d5db?text=MerBank';">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    </div>
+                    <div class="p-6 md:p-8 bg-gray-800/50 backdrop-blur-sm rounded-b-2xl border border-gray-700/50">
+                        <h3 class="text-2xl font-bold text-cyan-300 mb-3" style="font-family: 'Rajdhani', sans-serif;">MerBank - Full Stack Banking App</h3>
+                        <p class="text-gray-400 text-sm mb-5 leading-relaxed">A secure and comprehensive full-stack banking application enabling users to manage accounts, view transactions, and transfer funds seamlessly.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tag">MERN Stack</span>
+                            <span class="tag">MongoDB</span>
+                            <span class="tag">Express.js</span>
+                            <span class="tag">React</span>
+                            <span class="tag">Node.js</span>
+                        </div>
+                        <a href="https://github.com/poojan-2099/MerBank" target="_blank" rel="noopener noreferrer" 
+                           class="inline-block w-full text-center py-3 px-6 rounded-xl bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 transition-colors duration-300">
+                            View on GitHub
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3: Apple Clone -->
+                <div class="project-card group">
+                    <div class="relative overflow-hidden rounded-2xl">
+                        <img src="https://placehold.co/600x400/06b6d4/111827?text=Apple+Clone+Design" alt="Apple Clone Project Screenshot"
+                             class="w-full h-[280px] object-cover transform transition-all duration-500 group-hover:scale-110"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x400/374151/d1d5db?text=Image+Missing';">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    </div>
+                    <div class="p-6 md:p-8 bg-gray-800/50 backdrop-blur-sm rounded-b-2xl border border-gray-700/50">
+                        <h3 class="text-2xl font-bold text-cyan-300 mb-3" style="font-family: 'Rajdhani', sans-serif;">Apple Website Clone</h3>
+                        <p class="text-gray-400 text-sm mb-5 leading-relaxed">A responsive and pixel-perfect clone of the Apple website homepage, demonstrating strong front-end skills in HTML, CSS, and JavaScript.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tag">HTML5</span>
+                            <span class="tag">CSS3</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">Responsive Design</span>
+                        </div>
+                        <a href="https://poojan-2099.github.io/Apple_clone/" target="_blank" rel="noopener noreferrer" 
+                           class="inline-block w-full text-center py-3 px-6 rounded-xl bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 transition-colors duration-300">
+                            View Project
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 4: Booking App MERN -->
+                <div class="project-card group">
+                    <div class="relative overflow-hidden rounded-2xl">
+                        <img src="bookingapp.png" alt="Booking App Project Screenshot"
+                             class="w-full h-[280px] object-cover transform transition-all duration-500 group-hover:scale-110"
+                             onerror="this.onerror=null;this.src='https://placehold.co/600x400/374151/d1d5db?text=BookingApp';">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    </div>
+                    <div class="p-6 md:p-8 bg-gray-800/50 backdrop-blur-sm rounded-b-2xl border border-gray-700/50">
+                        <h3 class="text-2xl font-bold text-cyan-300 mb-3" style="font-family: 'Rajdhani', sans-serif;">Booking App (MERN Stack)</h3>
+                        <p class="text-gray-400 text-sm mb-5 leading-relaxed">A feature-rich full-stack booking application developed using the MERN stack (MongoDB, Express.js, React, Node.js) for seamless reservations.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tag">MERN Stack</span>
+                            <span class="tag">MongoDB</span>
+                            <span class="tag">Express.js</span>
+                            <span class="tag">React</span>
+                            <span class="tag">Node.js</span>
+                        </div>
+                        <a href="https://github.com/poojan-2099/bookinAPP" target="_blank" rel="noopener noreferrer" 
+                           class="inline-block w-full text-center py-3 px-6 rounded-xl bg-cyan-500/10 text-cyan-300 hover:bg-cyan-500/20 transition-colors duration-300">
+                            View on GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-12 md:py-16 relative overflow-hidden">
+        <canvas id="skills-canvas" class="absolute inset-0 w-full h-full opacity-30"></canvas>
+        <div class="container mx-auto px-4 md:px-6 relative z-10">
+            <div class="section-title-container w-full flex justify-center items-center mb-10">
+                <h2 class="section-title text-4xl md:text-6xl">Technical Skills</h2>
+            </div>
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                    <!-- Languages -->
+                    <div class="skills-card bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="skills-icon w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-bold text-cyan-300" style="font-family: 'Rajdhani', sans-serif;">Languages</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2 md:gap-3">
+                            <span class="tag">Java</span>
+                            <span class="tag">Python</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">TypeScript</span>
+                            <span class="tag">SQL</span>
+                            <span class="tag">MongoDB</span>
+                            <span class="tag">MySQL</span>
+                        </div>
+                    </div>
+
+                    <!-- Technologies/Frameworks -->
+                    <div class="skills-card bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="skills-icon w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-bold text-cyan-300" style="font-family: 'Rajdhani', sans-serif;">Technologies</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2 md:gap-3">
+                            <span class="tag">Angular (2+)</span>
+                            <span class="tag">AngularJS</span>
+                            <span class="tag">React</span>
+                            <span class="tag">Redux</span>
+                            <span class="tag">NgRx</span>
+                            <span class="tag">RxJS</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">Express.js</span>
+                            <span class="tag">Spring Boot</span>
+                            <span class="tag">Spring Web MVC</span>
+                            <span class="tag">HTML5</span>
+                            <span class="tag">CSS3</span>
+                            <span class="tag">Bootstrap</span>
+                            <span class="tag">Pandas</span>
+                            <span class="tag">Numpy</span>
+                            <span class="tag">TensorFlow</span>
+                            <span class="tag">React Native</span>
+                            <span class="tag">Next.js</span>
+                            <span class="tag">Kafka</span>
+                            <span class="tag">Spark</span>
+                        </div>
+                    </div>
+
+                    <!-- Cloud/DevOps -->
+                    <div class="skills-card bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="skills-icon w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl md:text-2xl font-bold text-cyan-300" style="font-family: 'Rajdhani', sans-serif;">Cloud & DevOps</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2 md:gap-3">
+                            <span class="tag">AWS</span>
+                            <span class="tag">DynamoDB</span>
+                            <span class="tag">EC2</span>
+                            <span class="tag">Lambda</span>
+                            <span class="tag">RDS</span>
+                            <span class="tag">S3</span>
+                            <span class="tag">SQS</span>
+                            <span class="tag">CloudWatch</span>
+                            <span class="tag">AWS CDK</span>
+                            <span class="tag">Azure DevOps</span>
+                            <span class="tag">Terraform</span>
+                            <span class="tag">Docker</span>
+                            <span class="tag">Kubernetes</span>
+                            <span class="tag">Git</span>
+                            <span class="tag">Selenium</span>
+                            <span class="tag">Cypress</span>
+                            <span class="tag">Restful APIs</span>
+                            <span class="tag">CI/CD</span>
+                            <span class="tag">Jira</span>
+                            <span class="tag">Visual Studio</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section id="education" class="py-12 md:py-16 bg-gray-900 relative overflow-hidden">
+        <canvas id="education-canvas" class="absolute inset-0 w-full h-full opacity-30"></canvas>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="section-title-container w-full flex justify-center items-center mb-10">
+                <h2 class="section-title text-4xl md:text-6xl">Education</h2>
+            </div>
+            <div class="max-w-2xl mx-auto space-y-6">
+                <div class="education-card bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50"> 
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-white p-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/7/7b/California_State_University%2C_Northridge_seal.svg/1200px-California_State_University%2C_Northridge_seal.svg.png" 
+                                 alt="CSUN Logo" 
+                                 class="w-full h-full object-contain"
+                                 onerror="this.src='https://placehold.co/200x200/374151/d1d5db?text=CSUN';">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="education-title text-2xl font-bold text-cyan-300 mb-2" style="font-family: 'Rajdhani', sans-serif;">Masters of Science, Computer Science</h3>
+                            <p class="text-cyan-400 font-medium text-lg">California State University, Northridge</p>
+                            <p class="text-gray-500 text-sm">GPA: 3.78 | Graduated: May 2023</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="education-card bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50"> 
+                    <div class="flex items-start gap-6">
+                        <div class="flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden bg-white p-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/Gujarat_Technological_University_logo.png/1200px-Gujarat_Technological_University_logo.png" 
+                                 alt="GTU Logo" 
+                                 class="w-full h-full object-contain"
+                                 onerror="this.src='https://placehold.co/200x200/374151/d1d5db?text=GTU';">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="education-title text-2xl font-bold text-cyan-300 mb-2" style="font-family: 'Rajdhani', sans-serif;">Bachelors of Engineering, Computer Engineering</h3>
+                            <p class="text-cyan-400 font-medium text-lg">Gujarat Technological University</p>
+                            <p class="text-gray-500 text-sm">GPA: 4.0 | Graduated: May 2021</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 md:py-20 relative overflow-hidden">
+        <canvas id="contact-canvas" class="absolute inset-0 w-full h-full opacity-30"></canvas>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="section-title-container w-full flex justify-center items-center mb-12">
+                <h2 class="section-title text-5xl md:text-6xl">Let's Connect</h2>
+            </div>
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 transform transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-cyan-500/20 border border-gray-700/50">
+                    <p class="text-lg text-gray-300 mb-10 leading-relaxed text-center">
+                        I'm excited to discuss new projects, innovative ideas, or opportunities to contribute to your vision. Don't hesitate to reach out!
+                    </p>
+                    <div class="flex flex-row justify-center gap-8 mb-10">
+                        <a href="mailto:ppatel2099@gmail.com" class="transition-transform duration-300 transform hover:scale-110" title="Email">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="social-icon" aria-label="Email">
+                                <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+                                <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+                            </svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/patelpoojan2099/" target="_blank" rel="noopener noreferrer" class="transition-transform duration-300 transform hover:scale-110" title="LinkedIn">
+                            <svg class="social-icon" viewBox="0 0 24 24" aria-label="LinkedIn">
+                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/poojan-2099" target="_blank" rel="noopener noreferrer" class="transition-transform duration-300 transform hover:scale-110" title="GitHub">
+                            <svg class="social-icon" viewBox="0 0 24 24" aria-label="GitHub">
+                                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800/80 backdrop-blur-sm text-gray-400 py-12 relative overflow-hidden">
+        <canvas id="footer-canvas" class="absolute inset-0 w-full h-full opacity-30"></canvas>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
+                    <div class="text-center md:text-left">
+                        <h3 class="text-2xl font-bold mb-2" style="font-family: 'Rajdhani', sans-serif; background: linear-gradient(90deg, #22d3ee, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Poojan Patel</h3>
+                        <p class="text-sm">Full Stack Developer & Cloud-Native Specialist</p>
+                    </div>
+                    <div class="flex gap-6">
+                        <a href="mailto:ppatel2099@gmail.com" class="text-cyan-400 hover:text-cyan-300 transition-colors">Email</a>
+                        <a href="https://www.linkedin.com/in/patelpoojan2099/" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:text-cyan-300 transition-colors">LinkedIn</a>
+                        <a href="https://github.com/poojan-2099" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:text-cyan-300 transition-colors">GitHub</a>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700/50 pt-8 text-center">
+                    <p class="text-sm">&copy; <span id="currentYear"></span> Poojan Patel. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Three.js Background Animation for Hero Section ---
+        let scene, camera, renderer, particles;
+
+        function initThreeJS() {
+            const heroSection = document.getElementById('hero');
+            const canvas = document.getElementById('hero-canvas');
+            if (!canvas || !heroSection) {
+                console.error("Hero canvas or section not found for Three.js");
+                return;
+            }
+            
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, heroSection.offsetWidth / heroSection.offsetHeight, 0.1, 1000);
+            camera.position.z = 30; 
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(heroSection.offsetWidth, heroSection.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+
+
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 7000; 
+            const posArray = new Float32Array(particleCount * 3); 
+
+            for (let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * (Math.random() * 300 + 100); 
+            }
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.08, 
+                color: 0x22d3ee, 
+                transparent: true,
+                opacity: 0.7, 
+                blending: THREE.AdditiveBlending 
+            });
+
+            particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+
+            animateThreeJS();
+        }
+
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+
+
+        function animateThreeJS() {
+            requestAnimationFrame(animateThreeJS);
+
+            if (particles) {
+                particles.rotation.y += 0.0002; 
+                particles.rotation.x += 0.0001;
+                
+                camera.position.x += (mouseX * 8 - camera.position.x) * 0.02; 
+                camera.position.y += (mouseY * 8 - camera.position.y) * 0.02; 
+                camera.lookAt(scene.position);
+            }
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            const heroSection = document.getElementById('hero');
+            if (camera && renderer && heroSection) {
+                camera.aspect = heroSection.offsetWidth / heroSection.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(heroSection.offsetWidth, heroSection.offsetHeight);
+            }
+        }
+        window.addEventListener('resize', onWindowResize, false);
+
+
+        // --- Smooth Scrolling, Footer Year, and Title Animation ---
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                initThreeJS();
+            } catch (e) {
+                console.error("Three.js initialization failed:", e);
+                const canvas = document.getElementById('hero-canvas');
+                if (canvas) canvas.style.display = 'none';
+            }
+
+            const currentYearElement = document.getElementById('currentYear');
+            if (currentYearElement) {
+                currentYearElement.textContent = new Date().getFullYear();
+            }
+
+            document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Intersection Observer for Title Animations
+            const animatedTitles = document.querySelectorAll('.section-title');
+            const observerOptions = {
+                root: null, 
+                rootMargin: '0px',
+                threshold: 0.1 
+            };
+
+            const observer = new IntersectionObserver((entries, observerInstance) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observerInstance.unobserve(entry.target); 
+                    }
+                });
+            }, observerOptions);
+
+            animatedTitles.forEach(title => {
+                observer.observe(title);
+            });
+        });
+
+        // Experience Section Three.js Animation
+        function initExperienceAnimation() {
+            const experienceSection = document.getElementById('experience');
+            const canvas = document.getElementById('experience-canvas');
+            if (!canvas || !experienceSection) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, experienceSection.offsetWidth / experienceSection.offsetHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(experienceSection.offsetWidth, experienceSection.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+
+            // Create particles
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 2000;
+            const posArray = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * (Math.random() * 200 + 50);
+            }
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x22d3ee,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+
+            // Animation
+            function animate() {
+                requestAnimationFrame(animate);
+                particles.rotation.y += 0.0005;
+                particles.rotation.x += 0.0002;
+                renderer.render(scene, camera);
+            }
+
+            // Handle resize
+            function onResize() {
+                camera.aspect = experienceSection.offsetWidth / experienceSection.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(experienceSection.offsetWidth, experienceSection.offsetHeight);
+            }
+
+            window.addEventListener('resize', onResize);
+            animate();
+        }
+
+        // About Section Three.js Animation
+        function initAboutAnimation() {
+            const aboutSection = document.getElementById('about');
+            const canvas = document.getElementById('about-canvas');
+            if (!canvas || !aboutSection) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, aboutSection.offsetWidth / aboutSection.offsetHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(aboutSection.offsetWidth, aboutSection.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+
+            // Create floating cubes
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({
+                color: 0x22d3ee,
+                transparent: true,
+                opacity: 0.2,
+                wireframe: true
+            });
+
+            const cubes = [];
+            for (let i = 0; i < 15; i++) {
+                const cube = new THREE.Mesh(geometry, material);
+                cube.position.x = (Math.random() - 0.5) * 50;
+                cube.position.y = (Math.random() - 0.5) * 50;
+                cube.position.z = (Math.random() - 0.5) * 50;
+                cube.rotation.x = Math.random() * Math.PI;
+                cube.rotation.y = Math.random() * Math.PI;
+                cubes.push(cube);
+                scene.add(cube);
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                cubes.forEach(cube => {
+                    cube.rotation.x += 0.005;
+                    cube.rotation.y += 0.005;
+                    cube.position.y += Math.sin(Date.now() * 0.001 + cube.position.x) * 0.01;
+                });
+                renderer.render(scene, camera);
+            }
+
+            function onResize() {
+                camera.aspect = aboutSection.offsetWidth / aboutSection.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(aboutSection.offsetWidth, aboutSection.offsetHeight);
+            }
+
+            window.addEventListener('resize', onResize);
+            animate();
+        }
+
+        // Projects Section Three.js Animation
+        function initProjectsAnimation() {
+            const projectsSection = document.getElementById('projects');
+            const canvas = document.getElementById('projects-canvas');
+            if (!canvas || !projectsSection) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, projectsSection.offsetWidth / projectsSection.offsetHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(projectsSection.offsetWidth, projectsSection.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+
+            // Create particles in a grid pattern
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 1500;
+            const posArray = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                posArray[i] = (Math.random() - 0.5) * 100;
+                posArray[i + 1] = (Math.random() - 0.5) * 100;
+                posArray[i + 2] = (Math.random() - 0.5) * 100;
+            }
+
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.1,
+                color: 0x22d3ee,
+                transparent: true,
+                opacity: 0.4,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                particles.rotation.y += 0.0003;
+                particles.rotation.x += 0.0001;
+                renderer.render(scene, camera);
+            }
+
+            function onResize() {
+                camera.aspect = projectsSection.offsetWidth / projectsSection.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(projectsSection.offsetWidth, projectsSection.offsetHeight);
+            }
+
+            window.addEventListener('resize', onResize);
+            animate();
+        }
+
+        // Contact Section Three.js Animation
+        function initContactAnimation() {
+            const contactSection = document.getElementById('contact');
+            const canvas = document.getElementById('contact-canvas');
+            if (!canvas || !contactSection) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, contactSection.offsetWidth / contactSection.offsetHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(contactSection.offsetWidth, contactSection.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+
+            // Create connecting lines
+            const geometry = new THREE.BufferGeometry();
+            const points = [];
+            const lineCount = 20;
+            const pointsPerLine = 50;
+
+            for (let i = 0; i < lineCount; i++) {
+                for (let j = 0; j < pointsPerLine; j++) {
+                    const x = (Math.random() - 0.5) * 100;
+                    const y = (Math.random() - 0.5) * 100;
+                    const z = (Math.random() - 0.5) * 100;
+                    points.push(x, y, z);
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
+
+            const material = new THREE.LineBasicMaterial({
+                color: 0x22d3ee,
+                transparent: true,
+                opacity: 0.2
+            });
+
+            const lines = new THREE.LineSegments(geometry, material);
+            scene.add(lines);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                lines.rotation.x += 0.0005;
+                lines.rotation.y += 0.0005;
+                renderer.render(scene, camera);
+            }
+
+            function onResize() {
+                camera.aspect = contactSection.offsetWidth / contactSection.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(contactSection.offsetWidth, contactSection.offsetHeight);
+            }
+
+            window.addEventListener('resize', onResize);
+            animate();
+        }
+
+        // Footer Three.js Animation
+        function initFooterAnimation() {
+            const footer = document.querySelector('footer');
+            const canvas = document.getElementById('footer-canvas');
+            if (!canvas || !footer) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, footer.offsetWidth / footer.offsetHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(footer.offsetWidth, footer.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+
+            // Create particles
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 1000;
+            const posArray = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 100;
+            }
+
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x22d3ee,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                particles.rotation.y += 0.0002;
+                renderer.render(scene, camera);
+            }
+
+            function onResize() {
+                camera.aspect = footer.offsetWidth / footer.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(footer.offsetWidth, footer.offsetHeight);
+            }
+
+            window.addEventListener('resize', onResize);
+            animate();
+        }
+
+        // Enhanced Skills Section Three.js Animation
+        function initSkillsAnimation() {
+            const skillsSection = document.getElementById('skills');
+            const canvas = document.getElementById('skills-canvas');
+            if (!canvas || !skillsSection) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, skillsSection.offsetWidth / skillsSection.offsetHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(skillsSection.offsetWidth, skillsSection.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+
+            // Create floating cubes with different sizes
+            const cubes = [];
+            const cubeCount = 15;
+            const sizes = [0.8, 1, 1.2];
+
+            for (let i = 0; i < cubeCount; i++) {
+                const size = sizes[Math.floor(Math.random() * sizes.length)];
+                const geometry = new THREE.BoxGeometry(size, size, size);
+                const material = new THREE.MeshBasicMaterial({
+                    color: 0x22d3ee,
+                    transparent: true,
+                    opacity: 0.1,
+                    wireframe: true
+                });
+
+                const cube = new THREE.Mesh(geometry, material);
+                cube.position.x = (Math.random() - 0.5) * 100;
+                cube.position.y = (Math.random() - 0.5) * 100;
+                cube.position.z = (Math.random() - 0.5) * 100;
+                cube.rotation.x = Math.random() * Math.PI;
+                cube.rotation.y = Math.random() * Math.PI;
+                cube.userData = {
+                    speed: 0.002 + Math.random() * 0.002,
+                    floatSpeed: 0.0005 + Math.random() * 0.0005
+                };
+                cubes.push(cube);
+                scene.add(cube);
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                const time = Date.now() * 0.001;
+
+                cubes.forEach(cube => {
+                    cube.rotation.x += cube.userData.speed;
+                    cube.rotation.y += cube.userData.speed;
+                    cube.position.y += Math.sin(time + cube.position.x) * cube.userData.floatSpeed;
+                    cube.position.x += Math.cos(time + cube.position.y) * cube.userData.floatSpeed * 0.5;
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            function onResize() {
+                camera.aspect = skillsSection.offsetWidth / skillsSection.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(skillsSection.offsetWidth, skillsSection.offsetHeight);
+            }
+
+            window.addEventListener('resize', onResize);
+            animate();
+        }
+
+        // Education Section Three.js Animation
+        function initEducationAnimation() {
+            const educationSection = document.getElementById('education');
+            const canvas = document.getElementById('education-canvas');
+            if (!canvas || !educationSection) return;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, educationSection.offsetWidth / educationSection.offsetHeight, 0.1, 1000);
+            camera.position.z = 30;
+
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(educationSection.offsetWidth, educationSection.offsetHeight);
+            renderer.setClearColor(0x000000, 0);
+
+            // Create floating diplomas and particles
+            const diplomas = [];
+            const diplomaCount = 8;
+            const sizes = [1.5, 2, 2.5];
+
+            // Create diplomas
+            for (let i = 0; i < diplomaCount; i++) {
+                const size = sizes[Math.floor(Math.random() * sizes.length)];
+                const geometry = new THREE.PlaneGeometry(size, size * 1.4);
+                const material = new THREE.MeshBasicMaterial({
+                    color: 0x22d3ee,
+                    transparent: true,
+                    opacity: 0.1,
+                    wireframe: true
+                });
+
+                const diploma = new THREE.Mesh(geometry, material);
+                diploma.position.x = (Math.random() - 0.5) * 100;
+                diploma.position.y = (Math.random() - 0.5) * 100;
+                diploma.position.z = (Math.random() - 0.5) * 100;
+                diploma.rotation.x = Math.random() * Math.PI;
+                diploma.rotation.y = Math.random() * Math.PI;
+                diploma.userData = {
+                    speed: 0.001 + Math.random() * 0.001,
+                    floatSpeed: 0.0003 + Math.random() * 0.0003,
+                    rotationSpeed: 0.0005 + Math.random() * 0.0005
+                };
+                diplomas.push(diploma);
+                scene.add(diploma);
+            }
+
+            // Create particles
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 1500;
+            const posArray = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 150;
+            }
+
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x22d3ee,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                const time = Date.now() * 0.001;
+
+                // Animate diplomas
+                diplomas.forEach(diploma => {
+                    diploma.rotation.x += diploma.userData.rotationSpeed;
+                    diploma.rotation.y += diploma.userData.rotationSpeed;
+                    diploma.position.y += Math.sin(time + diploma.position.x) * diploma.userData.floatSpeed;
+                    diploma.position.x += Math.cos(time + diploma.position.y) * diploma.userData.floatSpeed * 0.5;
+                });
+
+                // Animate particles
+                particles.rotation.y += 0.0002;
+                particles.rotation.x += 0.0001;
+
+                renderer.render(scene, camera);
+            }
+
+            function onResize() {
+                camera.aspect = educationSection.offsetWidth / educationSection.offsetHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(educationSection.offsetWidth, educationSection.offsetHeight);
+            }
+
+            window.addEventListener('resize', onResize);
+            animate();
+        }
+
+        // Update the DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                initThreeJS();
+                initExperienceAnimation();
+                initAboutAnimation();
+                initProjectsAnimation();
+                initContactAnimation();
+                initFooterAnimation();
+                initSkillsAnimation();
+                initEducationAnimation(); // Add this line
+            } catch (e) {
+                console.error("Three.js initialization failed:", e);
+                const canvases = document.querySelectorAll('canvas');
+                canvases.forEach(canvas => canvas.style.display = 'none');
+            }
+
+            // ... rest of the existing code ...
+        });
+    </script>
+
+</body>
+</html>
